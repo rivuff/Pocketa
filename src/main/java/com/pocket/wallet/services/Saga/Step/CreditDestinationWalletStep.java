@@ -55,7 +55,7 @@ public class CreditDestinationWalletStep implements SagaStep{
     }
 
     @Override
-    public boolean complensate(SagaContext context){
+    public boolean compensate(SagaContext context){
          // we have to get the destination wallet id from the context
 
          Long destinationWalletId = context.getLong("toWalletId");

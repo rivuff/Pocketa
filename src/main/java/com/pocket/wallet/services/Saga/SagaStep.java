@@ -4,7 +4,7 @@ public interface SagaStep {
 
     boolean execute(SagaContext context);
 
-    boolean complensate(SagaContext context);
+    boolean compensate(SagaContext context);
 
     String stepName();
 }

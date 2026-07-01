@@ -6,6 +6,7 @@ import java.util.Map;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.val;
 
 @Data
 @NoArgsConstructor
@@ -41,6 +42,19 @@ public class SagaContext {
             return BigDecimal.valueOf(((Number) value).doubleValue());
         }
 
+        return null;
+    }
+
+    public String getString(String key){
+        Object value = get(key);
+    
+        if(value instanceof String){
+            return (String) value;
+        }
+        if(value instanceof Enum<?>){
+            return ((Enum<?>) value).name();
+        }
+    
         return null;
     }
 }
