@@ -8,9 +8,11 @@ public interface SagaOrchestrator {
 
     boolean executeStep(Long sagaInstanceId, String stepName);         
     
-    boolean compensateSaga(Long sagaInstanceId, String stepName);
+    boolean compensateStep(Long sagaInstanceId, String stepName);
 
     SagaInstance getSagaInstance(Long sagaInstanceId);
+
+    void completeSaga(Long sagaInstanceId);
 
     void failSaga(Long sagaInstanceId);
 
