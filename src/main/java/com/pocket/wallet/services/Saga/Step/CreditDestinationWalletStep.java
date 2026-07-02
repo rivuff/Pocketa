@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import com.pocket.wallet.entities.Wallet;
 import com.pocket.wallet.repositories.WalletRepository;
 import com.pocket.wallet.services.Saga.SagaContext;
-import com.pocket.wallet.services.Saga.SagaStep;
+import com.pocket.wallet.services.Saga.SagaStepInterface;
+import com.pocket.wallet.services.Saga.Step.SagaStepFactory.SagaStepType;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class CreditDestinationWalletStep implements SagaStep{
+public class CreditDestinationWalletStep implements SagaStepInterface{
     
     private final WalletRepository walletRepository;
 
@@ -87,6 +88,6 @@ public class CreditDestinationWalletStep implements SagaStep{
 
     @Override
     public String stepName(){
-        return "CreditDestinationWalletStep";
+        return SagaStepType.CREDIT_DESTINATION_WALLET_STEP.toString();
     }
 }

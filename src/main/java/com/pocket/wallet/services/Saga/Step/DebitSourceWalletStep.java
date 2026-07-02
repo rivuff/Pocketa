@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import com.pocket.wallet.entities.Wallet;
 import com.pocket.wallet.repositories.WalletRepository;
 import com.pocket.wallet.services.Saga.SagaContext;
-import com.pocket.wallet.services.Saga.SagaStep;
+import com.pocket.wallet.services.Saga.SagaStepInterface;
+import com.pocket.wallet.services.Saga.Step.SagaStepFactory.SagaStepType;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service 
 @AllArgsConstructor
 @Slf4j
-public class DebitSourceWalletStep implements SagaStep{
+public class DebitSourceWalletStep implements SagaStepInterface{
 
     WalletRepository walletRepository;
 
@@ -69,8 +70,7 @@ public class DebitSourceWalletStep implements SagaStep{
 
     @Override
     public String stepName() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'stepName'");
+        return SagaStepType.DEBIT_SOURCE_WALLET_STEP.toString();
     }
     
 }

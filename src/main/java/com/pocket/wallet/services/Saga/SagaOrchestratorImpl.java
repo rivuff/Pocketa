@@ -1,0 +1,153 @@
+package com.pocket.wallet.services.Saga;
+
+import org.springframework.stereotype.Service;
+
+import tools.jackson.databind.json.JsonMapper;
+import com.pocket.wallet.entities.SagaInstance;
+import com.pocket.wallet.entities.SagaStatus;
+import com.pocket.wallet.entities.SagaStep;
+import com.pocket.wallet.entities.StepStatus;
+import com.pocket.wallet.repositories.SagaInstanceRepository;
+import com.pocket.wallet.repositories.SagaStepRepository;
+import com.pocket.wallet.services.Saga.Step.SagaStepFactory;
+import com.pocket.wallet.services.Saga.Step.SagaStepFactory.SagaStepType;
+
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@AllArgsConstructor
+@Slf4j
+public class SagaOrchestratorImpl implements SagaOrchestrator{
+
+    private final JsonMapper jsonMapper;
+    private final SagaInstanceRepository sagaInstanceRepository;
+    private final SagaStepFactory sagaStepFactory;
+    private final SagaStepRepository sagaStepRepository;
+
+    @Override
+    public Long startSaga(SagaContext context) {
+        try {
+            String contextJson = jsonMapper.writeValueAsString(context);
+
+            SagaInstance sagaInstance = SagaInstance.builder()
+                                            .context(contextJson)
+                                            .sagaStatus(SagaStatus.INITIATED)
+                                            .build();
+
+            sagaInstance = sagaInstanceRepository.save(sagaInstance);
+
+            log.info("started saga with id {}", sagaInstance.getId());
+
+            return sagaInstance.getId();
+
+        } catch (Exception e) {
+            log.error("Error starting saga");
+            throw new RuntimeException("Error starting saga", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean executeStep(Long sagaInstanceId, String stepName) {
+
+        SagaInstance sagaInstance = sagaInstanceRepository.findById(sagaInstanceId)
+                                    .orElseThrow(()-> new RuntimeException("no instance with this id found"));
+
+        SagaStepInterface step = sagaStepFactory.getSagaStep(stepName);
+
+        if(step == null){
+            log.error("saga step not found for step name {}", stepName);
+            throw new RuntimeException("Saga step not found");
+        }
+
+        // SagaStep sagaStepDB = sagaStepRepository.findBySagaInstanceIdAndStatus(sagaInstanceId, StepStatus.PENDING)
+        //                         .stream()
+        //                         .filter(s-> s.getStepName().equals(stepName))
+        //                         .findFirst()
+        //                         .orElse(SagaStep.builder().sagaInstanceId(sagaInstanceId).stepName(stepName)
+        //                                 .status(StepStatus.PENDING).build());
+
+        SagaStep sagaStepDB = sagaStepRepository.findBySagaInstanceIdAndStepNameAndStatus(sagaInstanceId, stepName, StepStatus.PENDING)
+                                .orElse(
+                                    SagaStep.builder().sagaInstanceId(sagaInstanceId).stepName(stepName)
+                                         .status(StepStatus.PENDING).build()
+                                );
+
+        if(sagaStepDB.getId() == null){
+            sagaStepDB = sagaStepRepository.save(sagaStepDB);
+        }
+
+        try {
+            SagaContext sagaContext = jsonMapper.readValue(sagaInstance.getContext(), SagaContext.class); 
+            sagaStepDB.setStatus(StepStatus.RUNNING);
+            sagaStepRepository.save(sagaStepDB);
+
+            boolean suuccess = step.execute(sagaContext);
+
+            if(suuccess){
+                sagaStepDB.setStatus(StepStatus.COMPLETED);    
+                sagaStepRepository.save(sagaStepDB);            //updating the status to completed in db 
+
+                sagaInstance.setCurrentStep(stepName);          //step we just completed
+
+                sagaInstance.setSagaStatus(SagaStatus.RUNNING);
+                sagaInstanceRepository.save(sagaInstance);
+
+                log.info("Step executed successfully");
+                return true;    
+            }else{
+                sagaStepDB.setStatus(StepStatus.FAILED);
+                sagaStepRepository.save(sagaStepDB);
+                log.error("Step {} faild", stepName);
+                return false;
+            }
+
+
+        } catch (Exception e) {
+            sagaStepDB.setStatus(StepStatus.FAILED);
+            sagaStepRepository.save(sagaStepDB);
+            log.error("Step {} faild", stepName);
+            return false;
+        }
+                    
+
+
+    }
+
+    @Override
+    public boolean compensateSaga(Long sagaInstanceId, String stepName) {
+        // get the saga instance
+
+        // get the all the steps of the instance having steps as completed of this stepname.
+
+        // complensate all the steps
+
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'compensateSaga'");
+    }
+
+    @Override
+    public SagaInstance getSagaInstance(Long sagaInstanceId) {
+        return sagaInstanceRepository.findById(sagaInstanceId)
+                .orElseThrow(()-> new RuntimeException("No saga step instance with this id found"));
+    }
+
+    @Override
+    public void failSaga(Long sagaInstanceId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'failSaga'");
+    }
+
+    @Override
+    public void compensateSaga(Long sagaInstanceId) {
+        SagaInstance sagaInstance = sagaInstanceRepository.findById(sagaInstanceId)
+        .orElseThrow(()-> new RuntimeException("No saga step instance with this id found"));
+
+        sagaInstance.setSagaStatus(SagaStatus.COMPLETED);
+
+        sagaInstanceRepository.save(sagaInstance);
+    }
+    
+}

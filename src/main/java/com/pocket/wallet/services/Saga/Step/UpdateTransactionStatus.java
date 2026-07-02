@@ -6,7 +6,8 @@ import com.pocket.wallet.entities.Transaction;
 import com.pocket.wallet.entities.TransactionStatus;
 import com.pocket.wallet.repositories.TransactionRepository;
 import com.pocket.wallet.services.Saga.SagaContext;
-import com.pocket.wallet.services.Saga.SagaStep;
+import com.pocket.wallet.services.Saga.SagaStepInterface;
+import com.pocket.wallet.services.Saga.Step.SagaStepFactory.SagaStepType;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class UpdateTransactionStatus implements SagaStep{
+public class UpdateTransactionStatus implements SagaStepInterface{
 
     private final TransactionRepository transactionRepository;
 
@@ -61,7 +62,7 @@ public class UpdateTransactionStatus implements SagaStep{
 
     @Override
     public String stepName() {
-        return "UpdateTransactionStatus";
+        return SagaStepType.UPDATE_TRANSACTION_WALLET_STEP.toString();
     }
     
 }
