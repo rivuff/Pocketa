@@ -6,5 +6,6 @@ public enum SagaStatus {
     COMPLETED,
     CANCELLED,
     COMPENSATING,
-    COMPENSATED
+    COMPENSATED,
+    FAILD
 }

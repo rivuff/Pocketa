@@ -29,6 +29,7 @@ public class SagaOrchestratorImpl implements SagaOrchestrator{
     private final SagaStepRepository sagaStepRepository;
 
     @Override
+    @Transactional
     public Long startSaga(SagaContext context) {
         try {
             String contextJson = jsonMapper.writeValueAsString(context);
@@ -117,6 +118,7 @@ public class SagaOrchestratorImpl implements SagaOrchestrator{
     }
 
     @Override
+    @Transactional
     public boolean compensateStep(Long sagaInstanceId, String stepName) {
 
           SagaInstance sagaInstance = sagaInstanceRepository.findById(sagaInstanceId)
@@ -184,12 +186,17 @@ public class SagaOrchestratorImpl implements SagaOrchestrator{
     }
 
     @Override
+    @Transactional
     public void failSaga(Long sagaInstanceId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'failSaga'");
+        SagaInstance sagaInstance =  sagaInstanceRepository.findById(sagaInstanceId)
+        .orElseThrow(()-> new RuntimeException("No saga step instance with this id found"));
+
+        sagaInstance.setSagaStatus(SagaStatus.FAILD);
+        sagaInstanceRepository.save(sagaInstance);
     }
 
     @Override
+    @Transactional
     public void compensateSaga(Long sagaInstanceId) {
         SagaInstance sagaInstance = sagaInstanceRepository.findById(sagaInstanceId)
         .orElseThrow(()-> new RuntimeException("No saga step instance with this id found"));
@@ -221,6 +228,7 @@ public class SagaOrchestratorImpl implements SagaOrchestrator{
     }
 
     @Override
+    @Transactional
     public void completeSaga(Long sagaInstanceId) {
         SagaInstance sagaInstance = sagaInstanceRepository.findById(sagaInstanceId)
         .orElseThrow(()-> new RuntimeException("No saga step instance with this id found"));
