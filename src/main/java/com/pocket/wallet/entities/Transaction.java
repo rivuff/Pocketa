@@ -38,9 +38,9 @@ public class Transaction extends BaseEntitty{
     @Column(name = "transaction_type", nullable =  false)
     private TransactionType type = TransactionType.TRANSFER;
 
-    @Column(name = "description")
+    @Column(name = "description")   
     private String description;
 
-    @Column(name = "saga_instance_id", nullable = false)
-    private String sagaInstanceId;
+    @Column(name = "saga_instance_id")
+    private Long sagaInstanceId;
 }

@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.val;
 
 @Data
 @NoArgsConstructor
+@Builder
 public class SagaContext {
     private Map<String, Object> data;
 

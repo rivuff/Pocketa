@@ -1,5 +1,6 @@
 package com.pocket.wallet.services.Saga.Step;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -19,6 +20,12 @@ public class SagaStepFactory {
         DEBIT_SOURCE_WALLET_STEP,
         UPDATE_TRANSACTION_WALLET_STEP
     }
+
+    public static final List<SagaStepFactory.SagaStepType> TransferMoneySagaSteps = List.of(
+        SagaStepFactory.SagaStepType.DEBIT_SOURCE_WALLET_STEP,
+        SagaStepFactory.SagaStepType.CREDIT_DESTINATION_WALLET_STEP,
+        SagaStepFactory.SagaStepType.UPDATE_TRANSACTION_WALLET_STEP
+    );
 
     public SagaStepInterface getSagaStep(String stepName){
        return sagaStepMap.get(stepName);

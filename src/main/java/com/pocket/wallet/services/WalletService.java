@@ -66,7 +66,8 @@ public class WalletService {
         log.info("Crediting successfully from wallet id {}", walletId);
     }
 
-    public BigDecimal getBalance(Long walletId){
+    public BigDecimal getWalletBalance(Long walletId){
+        log.info("Getting balance for the wallet {}", walletId);
         return getWalletById(walletId).getBalance();
     }
 }
