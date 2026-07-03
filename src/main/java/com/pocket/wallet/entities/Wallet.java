@@ -6,7 +6,9 @@ import java.math.BigInteger;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -14,8 +16,9 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class Wallet extends BaseEntitty{
+public class Wallet extends BaseEntity{
     
     @Column(name = "user_id", nullable = false)
     private Long userId;
@@ -24,6 +27,7 @@ public class Wallet extends BaseEntitty{
     private boolean isActive;
 
     @Column(name = "balance", nullable = false)
+    @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
     public boolean hasSufficientBalance(BigDecimal amount){

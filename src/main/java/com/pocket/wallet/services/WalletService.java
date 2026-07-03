@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class WalletService {
     
-    WalletRepository walletRepository;
+    private final WalletRepository walletRepository;
 
     public Wallet createWallet(Long userId){
         log.info("Creating wallet for user {}", userId);

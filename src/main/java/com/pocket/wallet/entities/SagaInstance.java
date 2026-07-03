@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -16,11 +17,12 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @Data
-@Builder
-public class SagaInstance extends BaseEntitty{
+@EqualsAndHashCode(callSuper = true)
+public class SagaInstance extends BaseEntity{
         
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private SagaStatus sagaStatus = SagaStatus.INITIATED;
 
     @Column(name = "context", columnDefinition = "TEXT")

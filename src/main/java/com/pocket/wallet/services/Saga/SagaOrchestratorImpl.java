@@ -12,7 +12,6 @@ import com.pocket.wallet.entities.StepStatus;
 import com.pocket.wallet.repositories.SagaInstanceRepository;
 import com.pocket.wallet.repositories.SagaStepRepository;
 import com.pocket.wallet.services.Saga.Step.SagaStepFactory;
-import com.pocket.wallet.services.Saga.Step.SagaStepFactory.SagaStepType;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;

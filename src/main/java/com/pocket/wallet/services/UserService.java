@@ -37,5 +37,10 @@ public class UserService {
 
         return users;
     }
+
+    public User updateUser(User user) {
+        log.info("Updating user with id: {}", user.getId());
+        return userRepository.save(user);
+    }
     
 }

@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -14,9 +15,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Table(name = "saga_step")
-public class SagaStep extends BaseEntitty{
+public class SagaStep extends BaseEntity{
     
     @Column(name = "saga_instance_id", nullable = false)
     private Long sagaInstanceId;

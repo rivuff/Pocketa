@@ -17,7 +17,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>{
 
     List<Transaction> findByToWalletId(Long toWalletId);
 
-    @Query("SELECT T FROM TRANSACTION T WHERE t.fromWalletId = :walletId or t.toWalletId = :walletId")
+    @Query("SELECT t FROM Transaction t WHERE t.fromWalletId = :walletId or t.toWalletId = :walletId")
     List<Transaction> findByWalletId(@Param("walletId") Long walletId);
 
 

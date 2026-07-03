@@ -26,8 +26,8 @@ public class TransactionService {
         log.info("creating a transaction");
 
         Transaction transaction = Transaction.builder()
-                                        .fromWallet(fromWalletId)
-                                        .toWallet(toWalletId)
+                                        .fromWalletId(fromWalletId)
+                                        .toWalletId(toWalletId)
                                         .amount(amount)
                                         .description(description)
                                         .build();
