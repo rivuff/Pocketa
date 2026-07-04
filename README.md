@@ -30,7 +30,6 @@ TransferSagaService
       └──► Step 3: UpdateTransactionStatus
                 └── completeSaga / failSaga
 
-<img width="1254" height="1084" alt="image" src="https://github.com/user-attachments/assets/1c286397-040d-449c-99bc-4dc742401af6" />
 
 
 ```
