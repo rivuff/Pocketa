@@ -56,14 +56,14 @@ public class WalletService {
     }
 
     @Transactional
-    public void credit(Long walletId, BigDecimal amount){
-        log.info("Crediting  {} from wallet id {}", amount, walletId);
+    public void credit(Long userId, BigDecimal amount){
+        log.info("Crediting  {} from wallet id {}", amount, userId);
 
-        Wallet wallet = getWalletById(walletId);
-        wallet.credit(amount);
+        //Wallet wallet = getWalletsByUserId(userId).get(0);
+        walletRepository.creditToWalletWithUserId(userId, amount);
 
-        walletRepository.save(wallet);  
-        log.info("Crediting successfully from wallet id {}", walletId);
+        //walletRepository.save(wallet);  
+        log.info("Crediting successfully from wallet with user id {}", userId);
     }
 
     public BigDecimal getWalletBalance(Long walletId){

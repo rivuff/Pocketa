@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/wallet")
+@RequestMapping("/api/v1/wallet")
 @Slf4j
 public class WalletController {
 
@@ -89,17 +89,17 @@ public class WalletController {
         }
     }
 
-    @PostMapping("/{id}/credit")
-    public ResponseEntity<CreditWalletResponseDTO> creditWallet(@PathVariable Long id, @RequestBody CreditWalletRequestDTO request) {
+    @PostMapping("/{userId}/credit")
+    public ResponseEntity<CreditWalletResponseDTO> creditWallet(@PathVariable Long userId, @RequestBody CreditWalletRequestDTO request) {
         try {
-            walletService.credit( id, request.getAmount());
-            Wallet wallet = walletService.getWalletById(id);
+            walletService.credit( userId, request.getAmount());
+            Wallet wallet = walletService.getWalletsByUserId(userId).get(0);
             return ResponseEntity.ok(CreditWalletResponseDTO.from(wallet, request.getAmount()));
         } catch (RuntimeException e) {
-            log.error("Wallet not found with id {}", id, e);
+            log.error("Wallet not found with user id {}", userId, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
-            log.error("Error crediting wallet id {}", id, e);
+            log.error("Error crediting wallet with user id {}", userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
