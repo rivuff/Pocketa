@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/onboard")
 public class OnboardingController {
     
-
     private final OnboardingService onboardingService;
 
     @PostMapping

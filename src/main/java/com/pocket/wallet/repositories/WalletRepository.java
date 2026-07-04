@@ -22,8 +22,18 @@ public interface WalletRepository extends JpaRepository<Wallet, Long>{
     List<Wallet> findByUserId(Long userId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT w FROM Wallet w where w.id = :id")
+    @Query("SELECT w FROM Wallet w where w.userId = :id")
     Optional<Wallet> findByIdWithLock(@Param("id") Long id);
+
+    @Modifying
+    @Transactional
+    @Query("""
+            UPDATE Wallet w
+            set w.balance = w.balance - :amount
+            where w.userId = :userId
+            """)
+    int debitFromWalletWithUserId(@Param("userId") Long userId,
+    @Param("amount") BigDecimal amount);
 
     @Modifying
     @Transactional

@@ -45,14 +45,18 @@ public class WalletService {
     }
 
     @Transactional
-    public void debit(Long walletId, BigDecimal amount){
-        log.info("Debiting  {} from wallet id {}", amount, walletId);
+    public void debit(Long userId, BigDecimal amount){
+        log.info("Debiting  {} from user id {}", amount, userId);
 
-        Wallet wallet = getWalletById(walletId);
-        wallet.debit(amount);
+        Wallet wallet = getWalletsByUserId(userId).get(0);
 
-        walletRepository.save(wallet);  
-        log.info("Debit successfully from wallet id {}", walletId);
+        if(wallet.getBalance().compareTo(amount) < 0){
+            throw new RuntimeException("insufficient balance to debit amount from user");
+        }
+       
+        walletRepository.debitFromWalletWithUserId(userId, amount);
+
+        log.info("Debit successfully from user id {}", userId);
     }
 
     @Transactional

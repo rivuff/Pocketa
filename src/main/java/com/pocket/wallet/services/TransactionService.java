@@ -63,7 +63,7 @@ public class TransactionService {
     }
 
     public void updateTransactionWithSagaInstanceId(Long transactionId, Long sagaInstanceId){
-        Transaction transaction = getTransactionById(sagaInstanceId);
+        Transaction transaction = getTransactionById(transactionId);
 
         transaction.setSagaInstanceId(sagaInstanceId);
 

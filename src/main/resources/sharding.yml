@@ -47,7 +47,7 @@ rules:
         databaseStrategy:
           standard:
             shardingColumn: from_wallet_id
-            shardingAlgorithmName: db-inline
+            shardingAlgorithmName: transaction-inline
         keyGenerateStrategy:
           column: id
           keyGeneratorName: snowflakestrategy
@@ -80,6 +80,10 @@ rules:
         type: INLINE
         props:
           algorithm-expression: shardwallet${Math.abs(Long.hashCode(user_id)) % 2 + 1}
+      transaction-inline:
+        type: INLINE
+        props:
+          algorithm-expression: shardwallet${Math.abs(Long.hashCode(from_wallet_id)) % 2 + 1}
           
     keyGenerators:
       snowflakestrategy:
