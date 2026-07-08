@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,10 +27,17 @@ public class TransactionController {
     private final TransferSagaService transferSagaService;
 
     @PostMapping
-    public ResponseEntity<TransferResponseDto> createTransaction(@RequestBody TransferRequestDTO transferRequestDTO){
+    public ResponseEntity<TransferResponseDto> createTransaction(
+        @RequestHeader("Idempotency-Key") String idempotencyKey,
+        @RequestBody TransferRequestDTO transferRequestDTO
+    ){
+
+        if (idempotencyKey == null || idempotencyKey.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
 
         Long sagaInstanceId = transferSagaService.initiateTransfer(transferRequestDTO.getFromWalletId(),transferRequestDTO.getToWalletId(),
-                                                transferRequestDTO.getAmount(), transferRequestDTO.getDescription());
+                                                transferRequestDTO.getAmount(), transferRequestDTO.getDescription(), idempotencyKey);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
             TransferResponseDto.builder()
